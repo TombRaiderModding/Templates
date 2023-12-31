@@ -9,7 +9,7 @@
 // File Mask: *.dtp
 //------------------------------------------------
 
-#include "section.bt"
+#include "tr7ae_section.bt"
 
 typedef struct
 {
@@ -26,8 +26,8 @@ typedef struct
 {
     FxaInfo info;
     int16   keyframeID;
-    char    fxID;
-    char    pad[3] <hidden=true>;
+    byte    fxID;
+    byte    pad[3] <hidden=true>;
 } AnimFxHeader;
 
 typedef struct

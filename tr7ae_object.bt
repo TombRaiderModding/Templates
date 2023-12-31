@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: tr7ae_object.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing the initial object section of objects
+//  Category: TR7AE
+// File Mask: *.gnc
+//------------------------------------------------
+
+#include "tr7ae_section.bt"
+
+typedef struct
+{
+    int32   oflags  <format=hex>;
+    int32   oflags2 <format=hex>;
+
+    int32   uniqueID;
+    uint32  guiID;
+    int32   functionTableID;
+    uintptr obsoleteSoundBank;
+
+    int16   numModels;
+    int16   numAnims;
+    int16   numAnimPatterns;
+    int16   pad <hidden=true>;
+
+    uintptr modelList;
+    uintptr animList;
+    uintptr animFXList;
+    uintptr animPatternList;
+
+    int32   introDist;
+    int32   vvIntroDist;
+    int32   removeDist;
+    int32   vvRemoveDist;
+
+    uintptr baseData;
+    uintptr data;
+    uintptr name;
+
+    uintptr soundData;
+
+    int16   sectionA;
+    int16   sectionB;
+    int16   sectionC;
+    int16   numberOfEffects;
+
+    uintptr effectList;
+    uintptr effectData;
+    uintptr objectDTPData;
+
+    uintptr textureLoadList;
+    uintptr childObjectList;
+
+    int32   lod1Dist;
+    int32   lod2Dist;
+    byte    lod1Model;
+    char    lod2Model;
+
+    byte    shadowModel;
+    byte    lightingOverride;
+    float   maxCheckeeDistance;
+    uintptr rdSetupList;
+} Object;
+
+SectionHeader header;
+Object object;

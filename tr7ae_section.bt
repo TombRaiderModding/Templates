@@ -84,6 +84,8 @@ typedef struct
     Relocation relocations[info.packedData.numRelocations] <fgcolor=cRed>;
 } SectionHeader;
 
+typedef uint32 uintptr;
+
 // Include in your template like so:
 //
 // ```
