@@ -1,0 +1,93 @@
+// This file contains the types for the section header.
+// The section header is included in every section in front of the
+// section data.
+//
+// The file is structed with the section info and relocations first
+// and the section data after.
+// 
+// --
+// [Section info]
+// --
+// [Relocations]
+// --
+// [Section data]
+// --
+//
+// See also https://cdcengine.re/docs/files/drm/
+//
+
+// The type of the section
+enum <byte> SectionType
+{
+    SECTION_GENERAL,
+    SECTION_EMPTY,
+    SECTION_ANIMATION,
+    SECTION_PUSHBUFFER_WC,
+    SECTION_PUSHBUFFER,
+    SECTION_TEXTURE,
+    SECTION_WAVE,
+    SECTION_DTPDATA,
+    SECTION_SCRIPT,
+    SECTION_SHADERLIB
+};
+
+// The type of relocation
+enum <ushort> RelocationType
+{
+    POINTER,
+    RESOURCE_ID,
+    RESOURCE_ID16,
+    RESOURCE_POINTER
+};
+
+// The section info
+typedef struct
+{
+    uint32      magic;
+    
+    int32       size;
+    SectionType type;
+    byte        skip;
+    uint16      versionID;
+    
+    struct
+    {
+        uint32 hasDebugInfo   : 1;
+        uint32 resourceType   : 7;
+        uint32 numRelocations : 24;        
+    } packedData;
+    
+    // The section ID, only useful for != SECTION_GENERAL
+    uint32 id;
+
+    // The specialisation mask
+    uint32 specMask <format=hex>;
+} SectionInfo;
+
+// Single relocations
+typedef struct
+{
+    struct
+    {
+        RelocationType type               : 3;
+        uint16         sectionIndexOrType : 13;
+    } typeAndSectionInfo;
+    
+    uint16 typeSpecific;
+    uint32 offset;
+} Relocation;
+
+// The main "header" with the info and all relocations
+typedef struct
+{
+    SectionInfo info <fgcolor=cGreen>;
+    Relocation relocations[info.packedData.numRelocations] <fgcolor=cRed>;
+} SectionHeader;
+
+// Include in your template like so:
+//
+// ```
+// #include "section.bt"
+//
+// SectionHeader header;
+// ```

@@ -1,0 +1,57 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: tr7ae_fxanim.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing FX Animation files
+//  Category: TR7AE
+// File Mask: *.dtp
+//------------------------------------------------
+
+#include "section.bt"
+
+typedef struct
+{
+  uint16 m_typeMask     : 2;
+  uint16 m_disable      : 1;
+  uint16 m_oneShot      : 1;
+  uint16 m_materialMode : 5;
+  uint16 m_triggerMode  : 2;
+  uint16 m_sectionId    : 1;
+  uint16 m_fxSize       : 4;
+} FxaInfo;
+
+typedef struct
+{
+    FxaInfo info;
+    int16   keyframeID;
+    char    fxID;
+    char    pad[3] <hidden=true>;
+} AnimFxHeader;
+
+typedef struct
+{
+    ubyte effectNumber;
+    ubyte modifierList[3];
+} ObjectEffectData;
+
+// Effect frames
+typedef struct
+{
+    AnimFxHeader effectHeader;
+    ObjectEffectData effectData;
+} ObjectEffectFXA;
+
+typedef struct
+{
+    // Read until we encounter the end marked by FF FF
+    while (ReadUShort() != 0xFFFF)
+    {
+        ObjectEffectFXA effect;
+    }
+} FXAnim;
+
+// The data
+SectionHeader header;
+FXAnim fxa;
