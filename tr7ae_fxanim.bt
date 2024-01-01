@@ -30,10 +30,54 @@ typedef struct
     byte    pad[3] <hidden=true>;
 } AnimFxHeader;
 
+enum <ubyte> EffectType
+{
+    NoEffect,
+
+    Glow1Seg               = 2,
+    GlowMSeg               = 3,
+    ParticleFX             = 5,
+    RibbonFX               = 6,
+    GlowFX                 = 7,
+    Snow                   = 10,
+    Rain                   = 11,
+    LightningFX            = 14,
+    BlastFX                = 15,
+    FlashFX                = 16,
+    BlastFX2               = 18,
+    Padshock0              = 19,
+    Padshock1              = 20,
+    PadshockRange          = 21,
+    DynamicLight           = 22,
+    CameraShake            = 23,
+    MotionBlur             = 24,
+    RibbonFX2              = 27,
+    DrawGroup              = 28,
+    LightningFX2           = 30,
+    Footprint              = 33,
+    ParticleFX2            = 34,
+    WeatherLightning       = 35,
+    ScreenShake2           = 36,
+    ParticleFX3            = 37,
+    InstanceFade           = 38,
+    AdvancedInstanceFade   = 39,
+    SpawnInstance          = 40,
+    ZoomDistance           = 41,
+    BurnFX                 = 42,
+    MiniSystem             = 43,
+    AdditionalBurnStart    = 44,
+    UnBurn                 = 45,
+    RandomSoundstream      = 46,
+    KillAttachedParticles  = 47,
+    KillParticlesByGroupID = 48,
+    Dirty                  = 49,
+    Wet                    = 50,
+};
+
 typedef struct
 {
-    ubyte effectNumber;
-    ubyte modifierList[3];
+    EffectType effectType;
+    ubyte      modifierList[3];
 } ObjectEffectData;
 
 // Effect frames
