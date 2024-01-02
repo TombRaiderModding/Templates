@@ -11,15 +11,23 @@
 
 #include "tr7ae_section.bt"
 
+enum <ushort> CallbackType
+{
+    G2ANIM_VARSOUND_CALLBACK,
+    G2ANIM_EFFECT_CALLBACK,
+    G2ANIM_USER_CALLBACK,
+    G2ANIM_RNDSOUND_CALLBACK
+};
+
 typedef struct
 {
-  uint16 m_typeMask     : 2;
-  uint16 m_disable      : 1;
-  uint16 m_oneShot      : 1;
-  uint16 m_materialMode : 5;
-  uint16 m_triggerMode  : 2;
-  uint16 m_sectionId    : 1;
-  uint16 m_fxSize       : 4;
+  CallbackType m_typeMask     : 2;
+  uint16       m_disable      : 1;
+  uint16       m_oneShot      : 1;
+  uint16       m_materialMode : 5;
+  uint16       m_triggerMode  : 2;
+  uint16       m_sectionId    : 1;
+  uint16       m_fxSize       : 4;
 } FxaInfo;
 
 typedef struct
@@ -78,14 +86,94 @@ typedef struct
 {
     EffectType effectType;
     ubyte      modifierList[3];
-} ObjectEffectData;
+} ObjectEffectData <read=EnumToString(effectType)>;
+
+typedef struct
+{
+    byte  isVarSound;
+    byte  pad[3] <hidden=true>;
+    int16 minVolDistance;
+    byte  volume;
+    byte  volumeVariation;
+    int   sfxToneID;
+    float pitch;
+    float pitchVariation;
+    float delay;
+    float delayVariation;
+    float timeOut;
+} AnimVariableSoundData;
+
+typedef struct
+{
+    byte  isVarSound;
+    byte  turnOnOff;
+    int16 blockingID;
+    char  idx[8];
+} AnimSoundStreamData;
+
+typedef struct
+{
+    int16 minVolDistance;
+    byte  chance1;
+    byte  chance2;
+    byte  chance3;
+    byte  volume1;
+    byte  volume2;
+    byte  volume3;
+    byte  volumeVariation1;
+    byte  volumeVariation2;
+    byte  volumeVariation3;
+    byte  pad <hidden=true>;
+    int   sfxToneID1;
+    int   sfxToneID2;
+    int   sfxToneID3;
+    float pitch1;
+    float pitch2;
+    float pitch3;
+    float pitchVariation1;
+    float pitchVariation2;
+    float pitchVariation3;
+    float timeOut;
+} AnimRandomSoundData;
 
 // Effect frames
 typedef struct
 {
+    local int start = FTell();
+
     AnimFxHeader effectHeader;
-    ObjectEffectData effectData;
-} ObjectEffectFXA;
+
+    local CallbackType type = effectHeader.info.m_typeMask;
+
+    // Display the struct depending on the callback type and other logic
+    if (type == G2ANIM_VARSOUND_CALLBACK)
+    {
+        // Check isVarSound
+        if (ReadByte() == 1)
+        {
+            AnimVariableSoundData soundData;
+        }
+        else
+        {
+            AnimSoundStreamData soundData;
+        }   
+    }
+    else if (type == G2ANIM_USER_CALLBACK)
+    {
+        uint16 callbackType;   
+    }
+    else if (type == G2ANIM_EFFECT_CALLBACK)
+    {
+        ObjectEffectData effectData;
+    }
+    else if (type == G2ANIM_RNDSOUND_CALLBACK)
+    {
+        AnimRandomSoundData soundData;
+    }
+    
+    // Skip the whole effect size
+    FSeek(start + effectHeader.info.m_fxSize * 4);
+} ObjectEffectFXA <read=EnumToString(type)>;
 
 typedef struct
 {
