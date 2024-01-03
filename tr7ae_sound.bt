@@ -1,0 +1,119 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: tr7ae_sound.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing sound sections
+//  Category: TR7AE
+// File Mask: *.dtp
+//------------------------------------------------
+
+#include "tr7ae_section.bt"
+
+enum SoundCallSelector
+{
+    SoundCallSelector_SfxTone,
+    SoundCallSelector_Stream,
+    SoundCallSelector_Choice,
+    SoundCallSelector_MaterialMap,
+    SoundCallSelector_CostumeMap
+};
+
+typedef struct SfxToneDef
+{
+    uint32 waveID;
+    byte   priority;
+    byte   volume;
+    byte   volumeVariation;
+    byte   mode;
+    uint32 soundGroup;
+    byte   delay;
+    byte   maxVoices;
+    byte   curVoices;
+    byte   pad <hidden=true>;
+    float  note;
+    
+    uint16 armode : 1;
+    uint16 ar : 7;
+    uint16 dr : 4;
+    uint16 sl : 4;
+    uint16 srmode : 1;
+    uint16 srsign : 1;
+    uint16 srpad : 1;
+    uint16 rr : 5;
+    uint16 sr : 7;
+    uint16 rrmode : 1;
+    
+    float  pitchVariation;
+    float  initialDelay;
+    float  initialDelayVariation;
+    
+    uint32 maxDistance;
+    byte   panPosition;
+    
+    byte   pad2[3] <hidden=true>;
+};
+
+typedef struct
+{
+    uint32 toneID;
+    uint32 chance;
+} Choice;
+
+typedef struct
+{
+    uint32 m_numChoices;
+    Choice m_choice[m_numChoices];
+} ChoiceList;
+
+typedef struct
+{
+    uint32 toneID;
+    uint16 material;   
+} MaterialMap;
+
+typedef struct
+{
+    uint32      m_numMaterials;
+    MaterialMap m_matmap[m_numMaterials];
+} MaterialList;
+
+typedef struct
+{
+    uint32 toneID;
+    int32  costume;
+} CostumeMap;
+
+typedef struct
+{
+    uint32     m_numCostumes;
+    CostumeMap m_map[m_numCostumes];   
+} CostumeList;
+
+typedef struct
+{
+    SoundCallSelector selector;
+    
+    // Display the right structure depending on the selector
+    if (selector == SoundCallSelector_SfxTone)
+    {
+        SfxToneDef toneDefinition;
+    }
+    else if (selector == SoundCallSelector_Choice)
+    {
+        ChoiceList choiceList;
+    }
+    else if (selector == SoundCallSelector_MaterialMap)
+    {
+        MaterialList materialList;
+    }
+    else if (selector == SoundCallSelector_CostumeMap)
+    {
+        CostumeList costumeList;
+    }
+} SoundCall;
+
+// The data
+SectionHeader header;
+SoundCall sound;
