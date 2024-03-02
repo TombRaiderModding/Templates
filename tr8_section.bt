@@ -1,0 +1,120 @@
+// This file contains the types for the section header.
+// The section header is included in every section in front of the
+// section data.
+//
+// The file is structed with the section info and relocations first
+// and the section data after.
+// 
+// --
+// [Section info]
+// --
+// [Relocation table]
+// --
+// [Section data]
+// --
+//
+
+// The type of the section
+enum <byte> SectionType
+{
+    SECTION_GENERAL,
+    SECTION_EMPTY,
+    SECTION_ANIMATION,
+    SECTION_PUSHBUFFER_WC,
+    SECTION_PUSHBUFFER,
+    SECTION_TEXTURE,
+    SECTION_WAVE,
+    SECTION_DTPDATA,
+    SECTION_SCRIPT,
+    SECTION_SHADERLIB,
+    SECTION_MATERIAL,
+    SECTION_OBJECT,
+    SECTION_RENDERRESOURCE,
+    SECTION_PDA_MAP
+};
+
+// The section info
+typedef struct
+{
+    uint32      magic;
+    
+    int32       size;
+    SectionType type;
+    byte        skip;
+    uint16      versionID;
+    
+    struct
+    {
+        uint32 hasDebugInfo   : 1;
+        uint32 resourceType   : 7;
+        uint32 relocationTableSize : 24;        
+    } packedData;
+    
+    // The section ID, only useful for != SECTION_GENERAL
+    uint32 id;
+
+    // The specialisation mask
+    uint32 specMask <format=hex>;
+} SectionInfo;
+
+// Relocations
+typedef struct
+{
+    uint32 numRelocations[5];
+} RelocationTableHeader;
+
+typedef struct
+{
+    uint32 offset;
+    uint32 referencedOffset;
+} InternRelocation;
+
+typedef struct
+{
+    uint64 sectionIndex : 14;
+    uint64 offset : 24;
+    uint64 referencedOffset : 26;
+} ExternRelocation;
+
+typedef struct
+{
+    uint32 offset : 25;
+    uint32 sectionType : 7;
+} Relocation3;
+
+typedef struct
+{
+    uint32 offset : 25;
+    uint32 sectionType : 7;
+} ResourceRelocation32;
+
+typedef struct
+{
+    uint32 offset : 25;
+    uint32 sectionType : 7;
+} ResourceRelocation16;
+
+// Relocation table with all different relocations
+typedef struct
+{
+    RelocationTableHeader header;
+    
+    InternRelocation internRelocations[header.numRelocations[0]];
+    ExternRelocation externRelocations[header.numRelocations[1]];
+    Relocation3 relocations3[header.numRelocations[2]];
+    ResourceRelocation32 relocations4[header.numRelocations[3]];
+    ResourceRelocation16 relocations5[header.numRelocations[4]];
+} RelocationTable;
+
+// The main "header" with the info and all relocations
+typedef struct
+{
+    SectionInfo info <fgcolor=cGreen>;
+    
+    if (info.packedData.relocationTableSize != 0)
+    {
+        RelocationTable relocationTable <fgcolor=cRed>;
+    }
+} SectionHeader;
+
+SectionHeader header;

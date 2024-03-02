@@ -1,3 +1,3 @@
 # Templates
 
-010 Editor templates for Tomb Raider Legend and Anniversary.
+010 Editor templates for Tomb Raider Legend, Anniversary and Underworld.
