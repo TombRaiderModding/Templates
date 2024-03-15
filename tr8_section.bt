@@ -117,4 +117,12 @@ typedef struct
     }
 } SectionHeader;
 
-SectionHeader header;
+typedef uint32 uintptr;
+
+// Include in your template like so:
+//
+// ```
+// #include "section.bt"
+//
+// SectionHeader header;
+// ```

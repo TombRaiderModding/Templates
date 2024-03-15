@@ -1,0 +1,37 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: tr8_cdrm.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing compressed DRM files
+//  Category: TR8
+// File Mask:  *.drm
+//  ID Bytes: 43 44 52 4D
+//------------------------------------------------
+
+enum BlockType
+{
+    kEmpty,
+    kUncompressed,
+    kCompressed
+};
+
+struct BlockInfo
+{
+    BlockType type : 8;
+    uint32 uncompressedSize : 24;
+    uint32 compressedSize;  
+};
+
+struct BlockList
+{
+    char magic[4];
+    uint32 version;
+    uint32 numBlocks;
+    uint32 numPadding;
+    
+    BlockInfo blocks[numBlocks];
+};
+
+BlockList blockList;
