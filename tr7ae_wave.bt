@@ -1,0 +1,26 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: tr7ae_wave.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing wave sections
+//  Category: Audio
+// File Mask: *.wave
+//------------------------------------------------
+
+#include "tr7ae_section.bt"
+
+typedef struct
+{
+    uint32 sampleRate;
+    uint32 loopStart;
+    uint32 loopEnd;
+} WaveHeader <style=sHeading1>;
+
+// Section header and audio header
+SectionHeader header;
+WaveHeader wave <style=sHeading2>;
+
+// Audio data
+char data[header.info.size - sizeof(wave)] <style=sData>;

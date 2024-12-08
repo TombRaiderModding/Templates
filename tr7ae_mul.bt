@@ -1,0 +1,86 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: tr7ae_mul.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing MultiplexStream files
+//  Category: Audio
+// File Mask: *.mul
+//------------------------------------------------
+
+typedef struct
+{
+    int32 hertz;
+    int32 startLoop;
+    int32 endLoop;
+    int32 channelCount;
+    
+    int32 reverbVol;
+    int32 startSizeToLoad;
+    int32 partialLoop;
+    int32 loopAreaSize;
+    
+    int32 hasCinematic;
+    int32 hasSubtitles;
+    
+    int32 loopStartFileOffset;
+    int32 loopStartBundleOffset;
+    int32 maxEEBytesPerRead;
+
+    float mediaLength;
+    
+	float volLeft[12];
+	float volRight[12];
+    
+    uint32 loopStartSamplesToSkip[12];
+} StreamHeader <style=sHeading1>;
+
+enum PacketType
+{
+	kSoundPacket,
+	kCinematicPacket,
+	kPaddingPacket
+};
+
+typedef struct
+{
+    PacketType type;
+    int32 size;
+    
+    char pad[8] <hidden=true>;
+} PacketHeader <style=sHeading2>;
+
+typedef struct
+{
+    int32 size;
+    
+    char pad[12] <hidden=true>;
+} SoundPacketHeader <style=sHeading3>;
+
+typedef struct
+{
+    PacketHeader header;
+    
+    if (header.type == kSoundPacket)
+    {
+        SoundPacketHeader soundHeader;
+        char data[soundHeader.size] <style=sData>;
+    }
+    else
+    {
+        char data[header.size] <style=sData>;
+    }
+} Packet <read=EnumToString(header.type)>;
+
+// Read the stream header
+StreamHeader header;
+
+// Seek to first packet
+FSeek(2048);
+
+// Read all packets
+while (!FEof())
+{
+    Packet packet;
+}
