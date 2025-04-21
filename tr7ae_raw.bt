@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: tr7ae_raw.bt
+//   Authors: TheIndra
+//   Version: 1.0
+//   Purpose: Parsing RAW images
+//  Category: Image
+// File Mask: *.raw
+//  ID Bytes: 21 57 41 52
+//------------------------------------------------
+
+typedef struct
+{
+    char    magic[4];
+    
+    uint32  pixelDataStart;
+    uint32  pixelDataLen;
+    uint32  mode;
+    uint32  attr;
+    uint32  width;
+    uint32  height;
+    
+    uint32  pitch;
+    uint32  depth;
+    uint32  adepth;
+    uint32  rdepth;
+    uint32  gdepth;
+    uint32  bdepth;
+    uint32  amask;
+    uint32  rmask;
+    uint32  gmask;
+    uint32  bmask;
+    uint32  mipLevel;
+    uint32  kValue;
+    uint32  log2Width;
+    uint32  log2Height;
+    uint32  mipLen[7];
+    uint32  rawVer;
+    uint32  tgaVer;
+    uint32  alphaDepth;
+    uint32  fill1;
+} ImageHeader <style=sHeading1>;
+
+// The header
+ImageHeader header;
+
+// Seek to image data
+FSeek(header.pixelDataStart);
+
+// The image data
+char data[header.pixelDataLen] <style=sData>;
